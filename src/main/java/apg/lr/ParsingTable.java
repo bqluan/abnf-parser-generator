@@ -1,12 +1,12 @@
 /**
  * Copyright 2011 ABNF Parser Generator Authors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 package apg.lr;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import util.MappedMatrix;
-import util.Matrix;
 
 import apg.automata.Dfa;
 import apg.automata.Program;
@@ -35,6 +23,17 @@ import apg.syntax.Rule;
 import apg.syntax.RuleList;
 import apg.syntax.SyntaxError;
 import apg.syntax.Token;
+import util.MappedMatrix;
+import util.Matrix;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class ParsingTable {
     private RuleList rules;
@@ -254,52 +253,52 @@ public class ParsingTable {
 
         for (Token token : tokens) {
             switch (token.tag()) {
-            case Alternation: {
-                stack.push(stack.pop().or(stack.pop()));
-                break;
-            }
-
-            case Char: {
-                int charCode = (int) token.character();
-
-                if (charCode > Token.END_MARKER || charCode < 0) {
-                    throw new SyntaxError(
-                            String.format(
-                                    "ABNF doesn't support Unicode, character codes must be in range [0, %1$d].",
-                                    Token.END_MARKER));
+                case Alternation: {
+                    stack.push(stack.pop().or(stack.pop()));
+                    break;
                 }
 
-                stack.push(Program.newChar(charCode));
-                break;
-            }
+                case Char: {
+                    int charCode = (int) token.character();
 
-            case Concatenation: {
-                Program right = stack.pop();
-                stack.push(stack.pop().concatenate(right));
-                break;
-            }
+                    if (charCode > Token.END_MARKER || charCode < 0) {
+                        throw new SyntaxError(
+                                String.format(
+                                        "ABNF doesn't support Unicode, character codes must be in range [0, %1$d].",
+                                        Token.END_MARKER));
+                    }
 
-            case Num: {
-                RangeSet ranges = new RangeSet();
-                ranges.add(token.num());
-                stack.push(Program.newCharClass(ranges));
-                break;
-            }
+                    stack.push(Program.newChar(charCode));
+                    break;
+                }
 
-            case Repetion: {
-                stack.push(stack.pop().repeat(token.min(), token.max()));
-                break;
-            }
+                case Concatenation: {
+                    Program right = stack.pop();
+                    stack.push(stack.pop().concatenate(right));
+                    break;
+                }
 
-            case RuleName: {
-                stack.push(Program.newChar(this.rules.get(token.ruleName())
-                        .getId()));
-                break;
-            }
+                case Num: {
+                    RangeSet ranges = new RangeSet();
+                    ranges.add(token.num());
+                    stack.push(Program.newCharClass(ranges));
+                    break;
+                }
 
-            default:
-                throw new IllegalStateException(String.format(
-                        "Tag '%1$s' is not supported.", token.tag()));
+                case Repetion: {
+                    stack.push(stack.pop().repeat(token.min(), token.max()));
+                    break;
+                }
+
+                case RuleName: {
+                    stack.push(Program.newChar(this.rules.get(token.ruleName())
+                            .getId()));
+                    break;
+                }
+
+                default:
+                    throw new IllegalStateException(String.format(
+                            "Tag '%1$s' is not supported.", token.tag()));
             }
         }
 

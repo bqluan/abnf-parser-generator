@@ -1,12 +1,12 @@
 /**
  * Copyright 2011 ABNF Parser Generator Authors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ public class Instruction {
     public static Instruction newChar(int charCode) {
         Instruction i = new Instruction();
         i.opcode = Opcode.Char;
-        i.data = new int[] { charCode };
+        i.data = new int[]{charCode};
         return i;
     }
 
@@ -42,7 +42,7 @@ public class Instruction {
     public static Instruction newJump(int offset) {
         Instruction i = new Instruction();
         i.opcode = Opcode.Jump;
-        i.data = new int[] { offset };
+        i.data = new int[]{offset};
         return i;
     }
 
@@ -61,7 +61,7 @@ public class Instruction {
     public static Instruction newSplit(int x, int y) {
         Instruction i = new Instruction();
         i.opcode = Opcode.Split;
-        i.data = new int[] { x, y };
+        i.data = new int[]{x, y};
         return i;
     }
 

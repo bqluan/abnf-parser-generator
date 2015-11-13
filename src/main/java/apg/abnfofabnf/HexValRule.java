@@ -1,12 +1,12 @@
 /**
  * Copyright 2011 ABNF Parser Generator Authors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,16 +15,16 @@
  */
 package apg.abnfofabnf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import apg.syntax.Repeat;
 import apg.syntax.Rule;
 import apg.syntax.Token;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HexValRule extends Rule {
     // hex-val = "x" 1*HEXDIG [ 1*("." 1*HEXDIG) / ("-" 1*HEXDIG) ]
-    private static final Token[] TOKENS = new Token[] { Token.newChar('x'),
+    private static final Token[] TOKENS = new Token[]{Token.newChar('x'),
             Token.newRuleName("HEXDIG"), Token.newRepetion(1, -1),
             Token.newConcatenation(), Token.newChar('.'),
             Token.newRuleName("HEXDIG"), Token.newRepetion(1, -1),
@@ -32,7 +32,7 @@ public class HexValRule extends Rule {
             Token.newChar('-'), Token.newRuleName("HEXDIG"),
             Token.newRepetion(1, -1), Token.newConcatenation(),
             Token.newAlternation(), Token.newRepetion(0, 1),
-            Token.newConcatenation(), };
+            Token.newConcatenation(),};
 
     public HexValRule() {
         super("hex-val", TOKENS);
@@ -58,7 +58,7 @@ public class HexValRule extends Rule {
         }
 
         if (i >= body.length) {
-            return new Integer[] { min };
+            return new Integer[]{min};
         }
 
         if ((Integer) body[i] == (int) '-') {
@@ -107,6 +107,6 @@ public class HexValRule extends Rule {
             }
         }
 
-        return charCodes.toArray(new Integer[] {});
+        return charCodes.toArray(new Integer[charCodes.size()]);
     }
 }

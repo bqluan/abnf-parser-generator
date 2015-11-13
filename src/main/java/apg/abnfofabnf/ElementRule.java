@@ -1,12 +1,12 @@
 /**
  * Copyright 2011 ABNF Parser Generator Authors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,23 +15,23 @@
  */
 package apg.abnfofabnf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import apg.automata.Range;
 import apg.syntax.Repeat;
 import apg.syntax.Rule;
 import apg.syntax.Token;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ElementRule extends Rule {
     // element = rulename / group / option / char-val / num-val / prose-val
-    private static final Token[] TOKENS = new Token[] {
+    private static final Token[] TOKENS = new Token[]{
             Token.newRuleName("rulename"), Token.newRuleName("group"),
             Token.newAlternation(), Token.newRuleName("option"),
             Token.newAlternation(), Token.newRuleName("char-val"),
             Token.newAlternation(), Token.newRuleName("num-val"),
             Token.newAlternation(), Token.newRuleName("prose-val"),
-            Token.newAlternation(), };
+            Token.newAlternation(),};
 
     public ElementRule() {
         super("element", TOKENS);
@@ -47,7 +47,7 @@ public class ElementRule extends Rule {
 
         if (v instanceof String) {
             // rulename
-            return new Token[] { Token.newRuleName((String) v), };
+            return new Token[]{Token.newRuleName((String) v),};
         } else if (v instanceof Token[]) {
             // group, option
             return v;
@@ -58,7 +58,7 @@ public class ElementRule extends Rule {
             Integer[] charCodes = (Integer[]) v;
 
             if (charCodes.length == 0) {
-                return tokens.toArray(new Token[] {});
+                return tokens.toArray(new Token[tokens.size()]);
             }
 
             tokens.add(Token.newChar((char) (int) charCodes[0]));
@@ -68,12 +68,12 @@ public class ElementRule extends Rule {
                 tokens.add(Token.newConcatenation());
             }
 
-            return tokens.toArray(new Token[] {});
+            return tokens.toArray(new Token[tokens.size()]);
         } else if (v instanceof Repeat) {
             // num-val
             Repeat r = (Repeat) v;
             Range range = new Range(r.min(), r.max());
-            return new Token[] { Token.newNum(range), };
+            return new Token[]{Token.newNum(range),};
         } else {
             throw new IllegalStateException();
         }

@@ -1,12 +1,12 @@
 /**
  * Copyright 2011 ABNF Parser Generator Authors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,17 +15,16 @@
  */
 package apg.code;
 
+import apg.automata.Dfa;
+import apg.lr.Action;
+import apg.lr.ParsingTable;
+import util.Matrix;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import util.Matrix;
-
-import apg.automata.Dfa;
-import apg.lr.Action;
-import apg.lr.ParsingTable;
 
 public class JavaCodeGenerator extends CodeGenerator {
     private Dfa[] reverseDfas;
@@ -35,6 +34,29 @@ public class JavaCodeGenerator extends CodeGenerator {
         super(getResource());
         this.reverseDfas = reverseDfas;
         this.parsingTable = parsingTable;
+    }
+
+    private static String getResource() {
+        StringBuilder content = new StringBuilder();
+        InputStream template = JavaCodeGenerator.class
+                .getResourceAsStream("JavaCodeGenerator.template");
+
+        try {
+            int c = template.read();
+            while (c != -1) {
+                content.append((char) c);
+                c = template.read();
+            }
+        } catch (IOException e) {
+            // nop
+        } finally {
+            try {
+                template.close();
+            } catch (IOException e) {
+            }
+        }
+
+        return content.toString();
     }
 
     protected String get(String placeholder) {
@@ -57,7 +79,7 @@ public class JavaCodeGenerator extends CodeGenerator {
                 .getGotoTable());
 
         @SuppressWarnings("unchecked")
-        Integer[] a = ((List<Integer>) ret[0]).toArray(new Integer[] {});
+        Integer[] a = ((List<Integer>) ret[0]).toArray(new Integer[]{});
         int[] ia = (int[]) ret[1];
         int[] ja = (int[]) ret[2];
 
@@ -88,7 +110,7 @@ public class JavaCodeGenerator extends CodeGenerator {
                 .getActionTable());
 
         @SuppressWarnings("unchecked")
-        Action[] a = ((List<Action>) ret[0]).toArray(new Action[] {});
+        Action[] a = ((List<Action>) ret[0]).toArray(new Action[]{});
         int[] ia = (int[]) ret[1];
         int[] ja = (int[]) ret[2];
 
@@ -131,7 +153,7 @@ public class JavaCodeGenerator extends CodeGenerator {
                     .MatrixToCompressedMatrix(i.getTransitionTable());
 
             @SuppressWarnings("unchecked")
-            Integer[] a = ((List<Integer>) ret[0]).toArray(new Integer[] {});
+            Integer[] a = ((List<Integer>) ret[0]).toArray(new Integer[]{});
             int[] ia = (int[]) ret[1];
             int[] ja = (int[]) ret[2];
 
@@ -157,7 +179,7 @@ public class JavaCodeGenerator extends CodeGenerator {
             Set<Integer> acceptStates = i.getAcceptStates();
             result.append("new int[]");
             result.append(this.getIntegerArray(acceptStates
-                    .toArray(new Integer[] {})));
+                    .toArray(new Integer[]{})));
             result.append("),");
         }
 
@@ -237,29 +259,6 @@ public class JavaCodeGenerator extends CodeGenerator {
 
         ia[lastRow + 1] = i;
 
-        return new Object[] { a, ia, ja };
-    }
-
-    private static String getResource() {
-        StringBuilder content = new StringBuilder();
-        InputStream template = JavaCodeGenerator.class
-                .getResourceAsStream("JavaCodeGenerator.template");
-
-        try {
-            int c = template.read();
-            while (c != -1) {
-                content.append((char) c);
-                c = template.read();
-            }
-        } catch (IOException e) {
-            // nop
-        } finally {
-            try {
-                template.close();
-            } catch (IOException e) {
-            }
-        }
-
-        return content.toString();
+        return new Object[]{a, ia, ja};
     }
 }

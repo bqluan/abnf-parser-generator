@@ -1,12 +1,12 @@
 /**
  * Copyright 2011 ABNF Parser Generator Authors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,15 +28,15 @@ public class Program {
 
     public static Program newChar(int charCode) {
         Program p = new Program();
-        p.instructions = new Instruction[] {
-                Instruction.newChar(charCode), MATCH };
+        p.instructions = new Instruction[]{
+                Instruction.newChar(charCode), MATCH};
         return p;
     }
 
     public static Program newCharClass(RangeSet ranges) {
         Program p = new Program();
-        p.instructions = new Instruction[] {
-                Instruction.newCharClass(ranges), MATCH };
+        p.instructions = new Instruction[]{
+                Instruction.newCharClass(ranges), MATCH};
         return p;
     }
 
@@ -177,10 +177,10 @@ public class Program {
         }
 
         Program prefix = new Program();
-        prefix.instructions = new Instruction[] { NOP, MATCH };
+        prefix.instructions = new Instruction[]{NOP, MATCH};
 
         Program suffix = new Program();
-        suffix.instructions = new Instruction[] { NOP, MATCH };
+        suffix.instructions = new Instruction[]{NOP, MATCH};
 
         if (min > 0) {
             if ((Integer.MAX_VALUE - 1) / min < this.instructions.length - 1) {

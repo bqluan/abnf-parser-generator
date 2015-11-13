@@ -1,12 +1,12 @@
 /**
  * Copyright 2011 ABNF Parser Generator Authors.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,22 +52,22 @@ public class Nfa {
             Instruction i = this.prog.get(ip);
 
             switch (i.getOpcode()) {
-            case Char:
-                if (i.getChar() == character) {
-                    pending.add(ip + 1);
-                }
+                case Char:
+                    if (i.getChar() == character) {
+                        pending.add(ip + 1);
+                    }
 
-                break;
+                    break;
 
-            case CharClass:
-                if (i.getCharClass().contains(new Range(character, character))) {
-                    pending.add(ip + 1);
-                }
+                case CharClass:
+                    if (i.getCharClass().contains(new Range(character, character))) {
+                        pending.add(ip + 1);
+                    }
 
-                break;
+                    break;
 
-            default:
-                throw new IllegalStateException();
+                default:
+                    throw new IllegalStateException();
             }
         }
 
@@ -94,27 +94,27 @@ public class Nfa {
             Instruction i = this.prog.get(ip);
 
             switch (i.getOpcode()) {
-            case Jump:
-            case Match:
-            case Nop:
-            case Split:
-                break;
+                case Jump:
+                case Match:
+                case Nop:
+                case Split:
+                    break;
 
-            case Char:
-                values.add(i.getChar());
-                break;
+                case Char:
+                    values.add(i.getChar());
+                    break;
 
-            case CharClass:
-                for (Range r : i.getCharClass()) {
-                    for (int j = r.min(); j <= r.max(); j++) {
-                        values.add(j);
+                case CharClass:
+                    for (Range r : i.getCharClass()) {
+                        for (int j = r.min(); j <= r.max(); j++) {
+                            values.add(j);
+                        }
                     }
-                }
 
-                break;
+                    break;
 
-            default:
-                throw new IllegalStateException();
+                default:
+                    throw new IllegalStateException();
             }
         }
 
@@ -133,36 +133,36 @@ public class Nfa {
                 boolean stopThread = false;
 
                 switch (i.getOpcode()) {
-                case Char:
-                case CharClass:
-                    pending.add(ip);
-                    stopThread = true;
-                    break;
+                    case Char:
+                    case CharClass:
+                        pending.add(ip);
+                        stopThread = true;
+                        break;
 
-                case Jump:
-                    ip += i.getOffset();
-                    break;
+                    case Jump:
+                        ip += i.getOffset();
+                        break;
 
-                case Match:
-                    if (!isMatch) {
-                        pending.add(-1);
-                        isMatch = true;
-                    }
+                    case Match:
+                        if (!isMatch) {
+                            pending.add(-1);
+                            isMatch = true;
+                        }
 
-                    stopThread = true;
-                    break;
+                        stopThread = true;
+                        break;
 
-                case Nop:
-                    ip++;
-                    break;
+                    case Nop:
+                        ip++;
+                        break;
 
-                case Split:
-                    this.state.add(ip + i.getOffsetY());
-                    ip += i.getOffsetX();
-                    break;
+                    case Split:
+                        this.state.add(ip + i.getOffsetY());
+                        ip += i.getOffsetX();
+                        break;
 
-                default:
-                    throw new IllegalStateException();
+                    default:
+                        throw new IllegalStateException();
                 }
 
                 if (stopThread) {
