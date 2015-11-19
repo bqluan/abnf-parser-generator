@@ -3,8 +3,8 @@ abnf-parser-generator
 
 The ABNF Parser Generator is a tool that generates a parser from a context-free
 grammar written in ABNF. The generated parser is a LR(1) parser. The LR(1)
-parser is a parser that reads input from Left to right and produces a Rightmost
-derivation, where the 1 refers to the number of "look ahead" input symbols that
+parser is a parser that reads input from **L**eft to right and produces a **R**ightmost
+derivation, where the **1** refers to the number of "look ahead" input symbols that
 are used in making parsing decisions.
 
 DEMO
