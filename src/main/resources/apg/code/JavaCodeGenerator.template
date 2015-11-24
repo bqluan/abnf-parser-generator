@@ -23,11 +23,12 @@ public class Parser {
         @@InitReverseDfas
     }
 
-    public boolean parse(InputStream stream) throws IOException {
+    public Object parse(InputStream stream) throws IOException, SyntaxError {
         boolean isMatch = false;
 
         Stack<Integer> stateStack = new Stack<Integer>();
         Stack<Integer> inputStack = new Stack<Integer>();
+        Stack<Object> objectStack = new Stack<Object>();
         stateStack.push(0);
 
         int c = stream.read();
@@ -38,12 +39,10 @@ public class Parser {
         while (true) {
             Action action = this.actionTable.get(stateStack.peek(), c);
 
-            if (action == null) {
-                isMatch = false;
-                break;
-            } else if (action.type() == ActionType.Shift) {
+            if (action.type() == ActionType.Shift) {
                 stateStack.push(action.state());
                 inputStack.push(c);
+                objectStack.push(c);
 
                 c = stream.read();
                 if (c == -1) {
@@ -53,7 +52,7 @@ public class Parser {
                 Dfa fa = this.reverseDfas[action.ruleId() - MIN_RULE_ID];
                 fa.setState(0);
 
-                Integer[] input = inputStack.toArray(new Integer[] {});
+                Integer[] input = inputStack.toArray(new Integer[inputStack.size()]);
                 int lastMatchIndex = input.length;
 
                 for (int i = input.length - 1; i >= 0 && fa.step(input[i]); i--) {
@@ -62,23 +61,29 @@ public class Parser {
                     }
                 }
 
-                for (int i = input.length - 1; i >= lastMatchIndex; i--) {
+                int bodyLength = input.length - lastMatchIndex;
+                Object[] body = new Object[bodyLength];
+                for (int i = bodyLength - 1; i >= 0; i--) {
                     inputStack.pop();
                     stateStack.pop();
+                    body[i] = objectStack.pop();
                 }
 
-                stateStack.push(this.gotoTable.get(stateStack.peek(),
-                        action.ruleId()));
+                stateStack.push(this.gotoTable.get(stateStack.peek(), action.ruleId()));
                 inputStack.push(action.ruleId());
+                objectStack.push(reduce(action.ruleId() ,body));
             } else if (action.type() == ActionType.Accept) {
-                isMatch = true;
                 break;
             } else {
-                throw new IllegalStateException();
+                throw new SyntaxError();
             }
         }
 
-        return isMatch;
+        return objectStack.pop();
+    }
+
+    protected Object reduce(int ruleId, Object[] body) {
+      return null;
     }
 
     private class Action {
@@ -187,6 +192,26 @@ public class Parser {
             }
 
             return y == this.ja[mid] ? this.a[mid] : null;
+        }
+    }
+
+    private class SyntaxError extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        public SyntaxError() {
+            super();
+        }
+
+        public SyntaxError(String message) {
+            super(message);
+        }
+
+        public SyntaxError(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public SyntaxError(Throwable cause) {
+            super(cause);
         }
     }
 }
