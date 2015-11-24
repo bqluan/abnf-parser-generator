@@ -71,7 +71,7 @@ public class Parser {
 
                 stateStack.push(this.gotoTable.get(stateStack.peek(), action.ruleId()));
                 inputStack.push(action.ruleId());
-                objectStack.push(reduce(action.ruleId() ,body));
+                objectStack.push(reduce(action.ruleId(), body));
             } else if (action.type() == ActionType.Accept) {
                 break;
             } else {
@@ -84,6 +84,26 @@ public class Parser {
 
     protected Object reduce(int ruleId, Object[] body) {
       return null;
+    }
+
+    public class SyntaxError extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        public SyntaxError() {
+            super();
+        }
+
+        public SyntaxError(String message) {
+            super(message);
+        }
+
+        public SyntaxError(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public SyntaxError(Throwable cause) {
+            super(cause);
+        }
     }
 
     private class Action {
@@ -192,26 +212,6 @@ public class Parser {
             }
 
             return y == this.ja[mid] ? this.a[mid] : null;
-        }
-    }
-
-    private class SyntaxError extends Exception {
-        private static final long serialVersionUID = 1L;
-
-        public SyntaxError() {
-            super();
-        }
-
-        public SyntaxError(String message) {
-            super(message);
-        }
-
-        public SyntaxError(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public SyntaxError(Throwable cause) {
-            super(cause);
         }
     }
 }

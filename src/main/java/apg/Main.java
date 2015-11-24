@@ -68,6 +68,7 @@ import apg.syntax.RuleList;
 import apg.syntax.SyntaxError;
 import apg.syntax.Token;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Stack;
@@ -76,19 +77,46 @@ class Main {
     public static void main(String[] args) throws IOException {
         // Construct a rule list which contains all rules in the ABNF DEFINITION
         // OF ABNF in [RFC5234].
-        RuleList rules = new RuleList(new Rule[]{new StartRule(),
-                new RuleListRule(), new RuleRule(), new RuleNameRule(),
-                new DefinedAsRule(), new ElementsRule(), new CWspRule(),
-                new CNlRule(), new CommentRule(), new AlternationRule(),
-                new ConcatenationRule(), new RepetitionRule(),
-                new RepeatRule(), new ElementRule(), new GroupRule(),
-                new OptionRule(), new CharValRule(), new NumValRule(),
-                new BinValRule(), new DecValRule(), new HexValRule(),
-                new ProseValRule(), new AlphaRule(), new BitRule(),
-                new CharRule(), new CrRule(), new CrlfRule(), new CtlRule(),
-                new DigitRule(), new DquoteRule(), new HexdigRule(),
-                new HtabRule(), new LfRule(), new LwspRule(), new OctetRule(),
-                new SpRule(), new VcharRule(), new WspRule()});
+        RuleList rules = new RuleList(new Rule[]{
+                new StartRule(),
+                new RuleListRule(),
+                new RuleRule(),
+                new RuleNameRule(),
+                new DefinedAsRule(),
+                new ElementsRule(),
+                new CWspRule(),
+                new CNlRule(),
+                new CommentRule(),
+                new AlternationRule(),
+                new ConcatenationRule(),
+                new RepetitionRule(),
+                new RepeatRule(),
+                new ElementRule(),
+                new GroupRule(),
+                new OptionRule(),
+                new CharValRule(),
+                new NumValRule(),
+                new BinValRule(),
+                new DecValRule(),
+                new HexValRule(),
+                new ProseValRule(),
+                new AlphaRule(),
+                new BitRule(),
+                new CharRule(),
+                new CrRule(),
+                new CrlfRule(),
+                new CtlRule(),
+                new DigitRule(),
+                new DquoteRule(),
+                new HexdigRule(),
+                new HtabRule(),
+                new LfRule(),
+                new LwspRule(),
+                new OctetRule(),
+                new SpRule(),
+                new VcharRule(),
+                new WspRule()
+        });
 
         // Build one reverse DFA for each rule. The reverse DFA is used to help
         // the parser to parse ABNF files.
@@ -96,8 +124,7 @@ class Main {
         Range alphabet = new Range(0, RuleList.MIN_RULE_ID + rules.size() - 1);
         for (int i = 0; i < rules.size(); i++) {
             try {
-                reverseDfas[i] = new Dfa(RpnToProgramReverse(rules,
-                        rules.get(i + RuleList.MIN_RULE_ID).tokens()), alphabet);
+                reverseDfas[i] = new Dfa(rpnToProgramReverse(rules, rules.get(i + RuleList.MIN_RULE_ID).tokens()), alphabet);
             } catch (SyntaxError e) {
                 System.err.println(e.getMessage());
                 return;
@@ -119,9 +146,13 @@ class Main {
 
         // Use the parser to parse the ABNF file to a RuleList. the RuleList in
         // this step contains all rules defined in the ABNF file, which is read
-        // from the standard input stream.
-        InputStream in = new AbnfInputStream(new WeakReferenceInputStream(
-                System.in));
+        // from the given file or standard input stream.
+        InputStream in;
+        if (args.length == 1) {
+            in = new AbnfInputStream(new FileInputStream(args[0]));
+        } else {
+            in = new AbnfInputStream(new WeakReferenceInputStream(System.in));
+        }
 
         try {
             rules = parser.parse(in);
@@ -133,8 +164,7 @@ class Main {
         }
 
         if (rules.size() == 0) {
-            System.err.println(
-                    "The input ABNF file doesn't contain any rule, no parser is generated.");
+            System.err.println("The input ABNF file doesn't contain any rule, no parser is generated.");
             return;
         }
 
@@ -144,8 +174,7 @@ class Main {
         alphabet = new Range(0, RuleList.MIN_RULE_ID + rules.size() - 1);
         for (int i = 0; i < rules.size(); i++) {
             try {
-                reverseDfas[i] = new Dfa(RpnToProgramReverse(rules,
-                        rules.get(i + RuleList.MIN_RULE_ID).tokens()), alphabet);
+                reverseDfas[i] = new Dfa(rpnToProgramReverse(rules, rules.get(i + RuleList.MIN_RULE_ID).tokens()), alphabet);
             } catch (SyntaxError e) {
                 System.err.println(e.getMessage());
                 return;
@@ -175,7 +204,7 @@ class Main {
      * @return Program for this rule.
      * @throws SyntaxError
      */
-    private static Program RpnToProgramReverse(RuleList rules, Token[] tokens) throws SyntaxError {
+    private static Program rpnToProgramReverse(RuleList rules, Token[] tokens) throws SyntaxError {
         Stack<Program> stack = new Stack<Program>();
 
         for (Token token : tokens) {
@@ -222,14 +251,12 @@ class Main {
                 }
 
                 default:
-                    throw new IllegalArgumentException(String.format(
-                            "Tag '%1$s' is not supported.", token.tag()));
+                    throw new IllegalArgumentException(String.format("Tag '%1$s' is not supported.", token.tag()));
             }
         }
 
         if (stack.size() != 1) {
-            throw new IllegalStateException(
-                    "The tokens parameter is not in Reverse Polish Notation.");
+            throw new IllegalStateException("The tokens parameter is not in Reverse Polish Notation.");
         }
 
         return stack.pop();
