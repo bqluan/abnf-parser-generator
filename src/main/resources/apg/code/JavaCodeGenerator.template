@@ -211,7 +211,7 @@ public class Parser {
                 }
             }
 
-            return y == this.ja[mid] ? this.a[mid] : null;
+            return (mid >= 0 && mid < this.ja.length && y == this.ja[mid]) ? this.a[mid] : null;
         }
     }
 }
