@@ -24,8 +24,6 @@ public class Parser {
     }
 
     public Object parse(InputStream stream) throws IOException, SyntaxError {
-        boolean isMatch = false;
-
         Stack<Integer> stateStack = new Stack<Integer>();
         Stack<Integer> inputStack = new Stack<Integer>();
         Stack<Object> objectStack = new Stack<Object>();
