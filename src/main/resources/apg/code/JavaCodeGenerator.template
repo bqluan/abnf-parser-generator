@@ -39,7 +39,9 @@ public class Parser {
         while (true) {
             Action action = this.actionTable.get(stateStack.peek(), c);
 
-            if (action.type() == ActionType.Shift) {
+            if (action == null) {
+                throw new SyntaxError();
+            } else if (action.type() == ActionType.Shift) {
                 stateStack.push(action.state());
                 inputStack.push(c);
                 objectStack.push(c);
@@ -83,7 +85,7 @@ public class Parser {
     }
 
     protected Object reduce(int ruleId, Object[] body) {
-      return null;
+        return null;
     }
 
     public class SyntaxError extends Exception {
