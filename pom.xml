@@ -1,6 +1,0 @@
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>bqluan</groupId>
-    <artifactId>abnf-parser-generator</artifactId>
-    <version>0.0.1</version>
-</project>
